@@ -1,28 +1,13 @@
-/* ===== Reset & Base ===== */
-*,
-*::before,
-*::after {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  --bg-primary: #1a1d29;
-  --bg-secondary: #121212;
-  --text-primary: rgba(255, 255, 255, 0.87);
-  --accent: #0063e5;
-  --accent-hover: #0483ee;
-  --border-color: #3a3a3a;
-}
-
 html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  background-color: #1a1d29;
 }
 
 body {
@@ -30,16 +15,10 @@ body {
   overflow-x: hidden;
 }
 
-/* Hide scrollbar utility */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
-/* ===== Header ===== */
 .header {
   display: flex;
   align-items: center;
@@ -50,7 +29,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .header-left {
@@ -64,49 +43,45 @@ body {
   width: 80px;
   object-fit: cover;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s;
 }
 
 .logo:hover {
   transform: scale(1.05);
 }
 
-/* Desktop nav */
 .nav-desktop {
   display: none;
   gap: 32px;
 }
 
-/* Mobile nav (first 3 icons) */
 .nav-mobile {
   display: flex;
   gap: 20px;
 }
 
-/* Nav item */
 .nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
   color: white;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
   text-decoration: none;
   position: relative;
-  padding-bottom: 4px;
   transition: opacity 0.2s;
 }
 
 .nav-item::after {
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: -4px;
   left: 0;
   width: 0;
   height: 2px;
-  background: white;
-  transition: width 0.3s ease;
+  background-color: white;
+  transition: width 0.3s;
 }
 
 .nav-item:hover::after {
@@ -120,10 +95,9 @@ body {
 .nav-item svg {
   width: 20px;
   height: 20px;
-  fill: currentColor;
+  fill: white;
 }
 
-/* Menu toggle (3-dot) */
 .menu-toggle {
   cursor: pointer;
   display: flex;
@@ -134,45 +108,42 @@ body {
 .menu-toggle svg {
   width: 22px;
   height: 22px;
-  fill: currentColor;
+  fill: white;
 }
 
-/* Dropdown */
 .dropdown-menu {
   position: absolute;
   top: 50px;
   left: 200px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background-color: #121212;
+  border: 1px solid #3a3a3a;
   padding: 16px 20px;
   border-radius: 8px;
   z-index: 200;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .hidden {
   display: none !important;
 }
 
-/* Avatar */
 .avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: fill;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s;
 }
 
 .avatar:hover {
-  border-color: var(--accent);
+  border-color: #0063e5;
 }
 
-/* ===== Slider Section ===== */
 .slider-section {
   position: relative;
   margin-top: 8px;
@@ -186,22 +157,17 @@ body {
   gap: 20px;
 }
 
-/* Hide scrollbar on slider */
 .slider-track::-webkit-scrollbar {
   display: none;
-}
-.slider-track {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 .slider-track img {
   min-width: 100%;
   height: 310px;
-  object-fit: cover;
-  object-position: left top;
+  object-fit: fill;
+  object-position: center;
   border-radius: 8px;
-  transition: border-color 0.1s ease-in-out, transform 0.2s ease;
+  transition: border-color 0.1s, transform 0.2s;
   border: 4px solid transparent;
   cursor: pointer;
 }
@@ -211,12 +177,11 @@ body {
   transform: scale(1.01);
 }
 
-/* Slider buttons */
 .slider-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
   font-size: 28px;
@@ -224,11 +189,11 @@ body {
   cursor: pointer;
   z-index: 10;
   border-radius: 4px;
-  transition: background 0.2s;
+  transition: background-color 0.2s;
 }
 
 .slider-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .slider-btn-left {
@@ -239,7 +204,6 @@ body {
   right: 8px;
 }
 
-/* ===== Production Houses ===== */
 .production-section {
   display: flex;
   justify-content: center;
@@ -252,7 +216,7 @@ body {
   position: relative;
   width: 180px;
   height: 100px;
-  border: 2px solid var(--border-color);
+  border: 2px solid #3a3a3a;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
@@ -260,7 +224,7 @@ body {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #1a1d29 0%, #0d0f14 100%);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
 
 .production-card:hover {
@@ -271,20 +235,23 @@ body {
 
 .production-logo {
   width: 70%;
-  object-fit: contain;
+  object-fit: cover;
   z-index: 2;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s;
 }
 
 .production-video {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0;
   z-index: 1;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s;
 }
 
 .production-card:hover .production-video {
@@ -295,31 +262,32 @@ body {
   opacity: 0;
 }
 
-/* ===== Responsive ===== */
+.hidden-mobile {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .logo {
     width: 115px;
   }
-
   .nav-desktop {
     display: flex;
   }
-
   .nav-mobile {
     display: none;
   }
-
   .menu-toggle {
     display: none;
   }
-
   .dropdown-menu {
-    display: none !important; /* Only for mobile */
+    display: none !important;
   }
-
   .production-card {
     width: 220px;
     height: 120px;
+  }
+  .hidden-mobile {
+    display: block;
   }
 }
 
@@ -327,23 +295,11 @@ body {
   .slider-track img {
     height: 200px;
   }
-
   .header {
     padding: 8px 16px;
   }
-
   .production-card {
     width: 140px;
     height: 80px;
-  }
-}
-
-.hidden-mobile {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .hidden-mobile {
-    display: block;
   }
 }

@@ -1,8 +1,6 @@
-// ===== Configuration =====
 const API_KEY = "29261b44cb2f64c2ec5544d4763bc62e";
 const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
 
-// ===== SVG Icons =====
 const icons = {
   home: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z"/><path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z"/></svg>`,
   search: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd"/></svg>`,
@@ -13,7 +11,6 @@ const icons = {
   dots: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.5 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd"/></svg>`,
 };
 
-// Menu items configuration
 const menuItems = [
   { name: "Home", icon: "home" },
   { name: "Search", icon: "search" },
@@ -23,7 +20,6 @@ const menuItems = [
   { name: "Series", icon: "tv" },
 ];
 
-// ===== Helper: Create nav item element =====
 function createNavItem(item, showName) {
   const div = document.createElement("a");
   div.className = "nav-item";
@@ -37,49 +33,41 @@ function createNavItem(item, showName) {
   return div;
 }
 
-// ===== Build Header Navigation =====
 function buildHeader() {
   const navDesktop = document.getElementById("nav-desktop");
   const navMobile = document.getElementById("nav-mobile");
   const menuToggle = document.getElementById("menu-toggle");
   const dropdown = document.getElementById("dropdown-menu");
 
-  // Desktop: all items with names
   menuItems.forEach(function (item) {
     navDesktop.appendChild(createNavItem(item, true));
   });
 
-  // Mobile: first 3 icons only
   menuItems.slice(0, 3).forEach(function (item) {
     navMobile.appendChild(createNavItem(item, false));
   });
 
-  // 3-dot toggle icon
   menuToggle.innerHTML = icons.dots;
 
-  // Dropdown: remaining items (index > 2)
   menuItems.slice(3).forEach(function (item) {
     dropdown.appendChild(createNavItem(item, true));
   });
 
-  // Toggle dropdown on click
   menuToggle.addEventListener("click", function (e) {
     e.stopPropagation();
     dropdown.classList.toggle("hidden");
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener("click", function () {
     dropdown.classList.add("hidden");
   });
 }
 
-// ===== Fetch and Render Slider =====
 function buildSlider() {
-  var sliderTrack = document.getElementById("slider-track");
-  var leftBtn = document.getElementById("slider-left");
-  var rightBtn = document.getElementById("slider-right");
-  var screenWidth = window.innerWidth;
+  let sliderTrack = document.getElementById("slider-track");
+  let leftBtn = document.getElementById("slider-left");
+  let rightBtn = document.getElementById("slider-right");
+  let screenWidth = window.innerWidth;
 
   fetch(
     "https://api.themoviedb.org/3/trending/movie/day?api_key=" + API_KEY
@@ -88,9 +76,9 @@ function buildSlider() {
       return res.json();
     })
     .then(function (data) {
-      var results = data.results;
+      let results = data.results;
       results.forEach(function (movie) {
-        var img = document.createElement("img");
+        let img = document.createElement("img");
         img.src = BASE_IMAGE_URL + movie.backdrop_path;
         img.alt = movie.title || movie.name || "Trending Movie";
         img.loading = "lazy";
@@ -101,18 +89,15 @@ function buildSlider() {
       console.error("Failed to fetch trending movies:", err);
     });
 
-  // Scroll left
   leftBtn.addEventListener("click", function () {
     sliderTrack.scrollLeft -= screenWidth - 110;
   });
 
-  // Scroll right
   rightBtn.addEventListener("click", function () {
     sliderTrack.scrollLeft += screenWidth - 110;
   });
 }
 
-// ===== Initialize =====
 document.addEventListener("DOMContentLoaded", function () {
   buildHeader();
   buildSlider();
