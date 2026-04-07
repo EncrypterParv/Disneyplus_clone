@@ -123,84 +123,85 @@ const genresList = [
 const DISCOVER_MOVIE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=2ec0d66f5bdf1dd12eefa0723f1479cf&with_genres=";
 
 function buildGenreMovieList() {
-  const container = document.getElementById("genre-movie-section");
+  let container = document.getElementById("genre-movie-section");
   if (!container) return;
   
-  // Render all genres
-  genresList.forEach((genre, index) => {
-    const section = document.createElement("div");
-    section.className = "genre-section";
+  
+  for (let i = 0; i < genresList.length; i++) {
+    let genre = genresList[i];
     
-    const title = document.createElement("h2");
-    title.className = "genre-title";
-    title.textContent = genre.name;
-    section.appendChild(title);
+   
+    let sectionDiv = document.createElement("div");
+    sectionDiv.className = "genre-section";
     
-    const listContainer = document.createElement("div");
-    listContainer.className = "movie-list-container";
     
-    const leftBtn = document.createElement("button");
-    leftBtn.className = "movie-list-btn movie-btn-left";
-    leftBtn.innerHTML = "&#10094;";
+    sectionDiv.innerHTML = `
+      <h2 class="genre-title">${genre.name}</h2>
+      <div class="movie-list-container">
+        <!-- Passing 'this' lets the function know exactly which button was clicked -->
+        <button class="movie-list-btn movie-btn-left" onclick="slideLeft(this)">&#10094;</button>
+        
+        <div class="movie-list"></div>
+        
+        <button class="movie-list-btn movie-btn-right" onclick="slideRight(this)">&#10095;</button>
+      </div>
+    `;
     
-    const rightBtn = document.createElement("button");
-    rightBtn.className = "movie-list-btn movie-btn-right";
-    rightBtn.innerHTML = "&#10095;";
     
-    const track = document.createElement("div");
-    track.className = "movie-list";
+    container.appendChild(sectionDiv);
     
-    leftBtn.addEventListener("click", () => {
-      track.scrollLeft -= 500;
-    });
-    rightBtn.addEventListener("click", () => {
-      track.scrollLeft += 500;
-    });
     
-    listContainer.appendChild(leftBtn);
-    listContainer.appendChild(track);
-    listContainer.appendChild(rightBtn);
-    section.appendChild(listContainer);
-    container.appendChild(section);
+    let trackElement = sectionDiv.querySelector(".movie-list");
+    
     
     fetch(DISCOVER_MOVIE_URL + genre.id)
-      .then(res => res.json())
-      .then(data => {
-        const movies = data.results;
-        movies.forEach(movie => {
-          if (!movie.backdrop_path && !movie.poster_path) return;
-          
-          if (index % 3 === 0) {
-            // Horizontal Card for every 3rd row
-            const cardContainer = document.createElement("div");
-            cardContainer.className = "hr-movie-card-container";
-            
-            const img = document.createElement("img");
-            img.src = BASE_IMAGE_URL + movie.backdrop_path;
-            img.className = "hr-movie-card";
-            img.loading = "lazy";
-            img.alt = movie.title || movie.name;
-            
-            const movieTitle = document.createElement("h2");
-            movieTitle.className = "hr-movie-title";
-            movieTitle.textContent = movie.title || movie.name;
-            
-            cardContainer.appendChild(img);
-            cardContainer.appendChild(movieTitle);
-            track.appendChild(cardContainer);
-          } else {
-            // Standard vertical poster card
-            const img = document.createElement("img");
-            img.src = BASE_IMAGE_URL + movie.poster_path;
-            img.className = "movie-card";
-            img.loading = "lazy";
-            img.alt = movie.title || movie.name;
-            track.appendChild(img);
-          }
-        });
+      .then(function(res) {
+        return res.json();
       })
-      .catch(err => console.error("Error fetching movies for genre " + genre.name, err));
-  });
+      .then(function(data) {
+        let movies = data.results;
+        
+        
+        for (let j = 0; j < movies.length; j++) {
+          let movie = movies[j];
+          let movieName = movie.title || movie.name;
+          
+          if (!movie.backdrop_path && !movie.poster_path) {
+             continue; 
+          }
+          
+          
+          if (i % 3 === 0) {
+            trackElement.innerHTML += `
+              <div class="hr-movie-card-container">
+                <img src="${BASE_IMAGE_URL + movie.backdrop_path}" class="hr-movie-card" loading="lazy" />
+                <h2 class="hr-movie-title">${movieName}</h2>
+              </div>
+            `;
+          } else {
+            trackElement.innerHTML += `
+              <img src="${BASE_IMAGE_URL + movie.poster_path}" class="movie-card" loading="lazy" />
+            `;
+          }
+        }
+      })
+      .catch(function(err) {
+        console.log("Error loading movies:", err);
+      });
+  }
+}
+
+
+function slideLeft(clickedButton) {
+  
+  let track = clickedButton.nextElementSibling;
+  track.scrollLeft -= 500;
+}
+
+function slideRight(clickedButton) {
+  
+  let track = clickedButton.previousElementSibling;
+  track.scrollLeft += 500;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
