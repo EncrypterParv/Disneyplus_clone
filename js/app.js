@@ -98,7 +98,113 @@ function buildSlider() {
   });
 }
 
+const genresList = [
+  { "id": 28, "name": "Action" },
+  { "id": 12, "name": "Adventure" },
+  { "id": 16, "name": "Animation" },
+  { "id": 35, "name": "Comedy" },
+  { "id": 80, "name": "Crime" },
+  { "id": 99, "name": "Documentary" },
+  { "id": 18, "name": "Drama" },
+  { "id": 10751, "name": "Family" },
+  { "id": 14, "name": "Fantasy" },
+  { "id": 36, "name": "History" },
+  { "id": 27, "name": "Horror" },
+  { "id": 10402, "name": "Music" },
+  { "id": 9648, "name": "Mystery" },
+  { "id": 10749, "name": "Romance" },
+  { "id": 878, "name": "Science Fiction" },
+  { "id": 10770, "name": "TV Movie" },
+  { "id": 53, "name": "Thriller" },
+  { "id": 10752, "name": "War" },
+  { "id": 37, "name": "Western" }
+];
+
+const DISCOVER_MOVIE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=2ec0d66f5bdf1dd12eefa0723f1479cf&with_genres=";
+
+function buildGenreMovieList() {
+  const container = document.getElementById("genre-movie-section");
+  if (!container) return;
+  
+  // Render all genres
+  genresList.forEach((genre, index) => {
+    const section = document.createElement("div");
+    section.className = "genre-section";
+    
+    const title = document.createElement("h2");
+    title.className = "genre-title";
+    title.textContent = genre.name;
+    section.appendChild(title);
+    
+    const listContainer = document.createElement("div");
+    listContainer.className = "movie-list-container";
+    
+    const leftBtn = document.createElement("button");
+    leftBtn.className = "movie-list-btn movie-btn-left";
+    leftBtn.innerHTML = "&#10094;";
+    
+    const rightBtn = document.createElement("button");
+    rightBtn.className = "movie-list-btn movie-btn-right";
+    rightBtn.innerHTML = "&#10095;";
+    
+    const track = document.createElement("div");
+    track.className = "movie-list";
+    
+    leftBtn.addEventListener("click", () => {
+      track.scrollLeft -= 500;
+    });
+    rightBtn.addEventListener("click", () => {
+      track.scrollLeft += 500;
+    });
+    
+    listContainer.appendChild(leftBtn);
+    listContainer.appendChild(track);
+    listContainer.appendChild(rightBtn);
+    section.appendChild(listContainer);
+    container.appendChild(section);
+    
+    fetch(DISCOVER_MOVIE_URL + genre.id)
+      .then(res => res.json())
+      .then(data => {
+        const movies = data.results;
+        movies.forEach(movie => {
+          if (!movie.backdrop_path && !movie.poster_path) return;
+          
+          if (index % 3 === 0) {
+            // Horizontal Card for every 3rd row
+            const cardContainer = document.createElement("div");
+            cardContainer.className = "hr-movie-card-container";
+            
+            const img = document.createElement("img");
+            img.src = BASE_IMAGE_URL + movie.backdrop_path;
+            img.className = "hr-movie-card";
+            img.loading = "lazy";
+            img.alt = movie.title || movie.name;
+            
+            const movieTitle = document.createElement("h2");
+            movieTitle.className = "hr-movie-title";
+            movieTitle.textContent = movie.title || movie.name;
+            
+            cardContainer.appendChild(img);
+            cardContainer.appendChild(movieTitle);
+            track.appendChild(cardContainer);
+          } else {
+            // Standard vertical poster card
+            const img = document.createElement("img");
+            img.src = BASE_IMAGE_URL + movie.poster_path;
+            img.className = "movie-card";
+            img.loading = "lazy";
+            img.alt = movie.title || movie.name;
+            track.appendChild(img);
+          }
+        });
+      })
+      .catch(err => console.error("Error fetching movies for genre " + genre.name, err));
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   buildHeader();
   buildSlider();
+  buildGenreMovieList();
 });
