@@ -172,16 +172,26 @@ function buildGenreMovieList() {
           
           
           if (i % 3 === 0) {
-            trackElement.innerHTML += `
-              <div class="hr-movie-card-container">
-                <img src="${BASE_IMAGE_URL + movie.backdrop_path}" class="hr-movie-card" loading="lazy" />
-                <h2 class="hr-movie-title">${movieName}</h2>
-              </div>
+            let card = document.createElement("div");
+            card.className = "hr-movie-card-container";
+            card.dataset.title = movieName.toLowerCase();
+            card.dataset.rating = movie.vote_average || 0;
+            card.dataset.index = j;
+            card.innerHTML = `
+              <img src="${BASE_IMAGE_URL + movie.backdrop_path}" class="hr-movie-card" loading="lazy" />
+              <h2 class="hr-movie-title">${movieName}</h2>
             `;
+            trackElement.appendChild(card);
           } else {
-            trackElement.innerHTML += `
-              <img src="${BASE_IMAGE_URL + movie.poster_path}" class="movie-card" loading="lazy" />
-            `;
+            let card = document.createElement("img");
+            card.src = BASE_IMAGE_URL + movie.poster_path;
+            card.className = "movie-card";
+            card.loading = "lazy";
+            card.alt = movieName;
+            card.dataset.title = movieName.toLowerCase();
+            card.dataset.rating = movie.vote_average || 0;
+            card.dataset.index = j;
+            trackElement.appendChild(card);
           }
         }
       })
@@ -193,19 +203,94 @@ function buildGenreMovieList() {
 
 
 function slideLeft(clickedButton) {
-  
   let track = clickedButton.nextElementSibling;
   track.scrollLeft -= 500;
 }
 
 function slideRight(clickedButton) {
-  
   let track = clickedButton.previousElementSibling;
   track.scrollLeft += 500;
+}
+
+function searchMovies() {
+  let query = document.getElementById("search-input").value.toLowerCase().trim();
+  let allSections = document.querySelectorAll(".genre-section");
+
+  allSections.forEach(function (section) {
+    let cards = section.querySelectorAll(".movie-card, .hr-movie-card-container");
+    let anyVisible = false;
+
+    cards.forEach(function (card) {
+      let title = card.dataset.title || "";
+      if (query === "" || title.includes(query)) {
+        card.style.display = "";
+        anyVisible = true;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    section.style.display = anyVisible || query === "" ? "" : "none";
+  });
+}
+
+function sortMovies() {
+  let sortValue = document.getElementById("sort-select").value;
+  let allLists = document.querySelectorAll(".movie-list");
+
+  for (let i = 0; i < allLists.length; i++) {
+    let list = allLists[i];
+
+    let cards = [];
+    for (let j = 0; j < list.children.length; j++) {
+      cards.push(list.children[j]);
+    }
+
+    for (let a = 0; a < cards.length; a++) {
+      for (let b = 0; b < cards.length - a - 1; b++) {
+        let shouldSwap = false;
+
+        if (sortValue === "az") {
+          let titleA = cards[b].dataset.title || "";
+          let titleB = cards[b + 1].dataset.title || "";
+          if (titleA > titleB) {
+            shouldSwap = true;
+          }
+
+        } else if (sortValue === "rating") {
+          let ratingA = parseFloat(cards[b].dataset.rating) || 0;
+          let ratingB = parseFloat(cards[b + 1].dataset.rating) || 0;
+          if (ratingA < ratingB) {
+            shouldSwap = true;
+          }
+
+        } else {
+          let indexA = parseInt(cards[b].dataset.index) || 0;
+          let indexB = parseInt(cards[b + 1].dataset.index) || 0;
+          if (indexA > indexB) {
+            shouldSwap = true;
+          }
+        }
+
+        if (shouldSwap) {
+          let temp = cards[b];
+          cards[b] = cards[b + 1];
+          cards[b + 1] = temp;
+        }
+      }
+    }
+
+    for (let k = 0; k < cards.length; k++) {
+      list.appendChild(cards[k]);
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   buildHeader();
   buildSlider();
   buildGenreMovieList();
+
+  document.getElementById("search-input").addEventListener("input", searchMovies);
+  document.getElementById("sort-select").addEventListener("change", sortMovies);
 });
